@@ -40,7 +40,8 @@ To get things started you need:
 
 # Known Issues
 * the resolution for the webrtc screen is limited (due to chromecast limitations it seems), it would be possible technically speaken, but a custom app is not allowed to use the full resolution
- 
+* performance in general: this approach needs quite a good server to stream multiple dashboards. the higher the resolution, the more ressources are needed.
+
 CONTRIBUTIONS WELCOME! If you are willing to help, just open a PR or contact me via bug system or simon.tretter@hokify.com.
 
 # Frontend
