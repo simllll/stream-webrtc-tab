@@ -1,0 +1,15 @@
+{
+  "root": true,
+  "extends": ["@hokify"],
+  "overrides": [
+    {
+      "files": ["*.test.ts", "*.spec.ts"],
+      "env": {
+        "mocha": true
+      },
+      "rules": {
+        "@typescript-eslint/no-unused-expressions": "off"
+      }
+    }
+  ]
+}

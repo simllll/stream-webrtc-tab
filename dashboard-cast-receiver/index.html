@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    body {
+      background: #484848; /* #0fb1af; */
+      width: 100%;
+      height: 100%;
+      background-image: url(https://files.hokify.com/assets/dashboard/logo-white.png);
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: center;
+
+      bottom: 0;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      margin: 0;
+    }
+    video {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      object-fit: fill;
+    }
+
+  </style>
+</head>
+
+<body>
+  <video id="remoteVideo" autoplay playsinline></video>
+
+  <script src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+  <script src="js/socket.io.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

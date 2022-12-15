@@ -1,0 +1,11 @@
+{
+	"name": "Video Capture",
+	"version": "0.1.0",
+	"key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2t3ge1hfewBWhRc+EpdeUFmdBiwhRuzfcW+8pbQTWb6sHou+vAY/pFlzMkn5qtwyIGZfYQ5HHprvSE47WquB2mzINRz3S6Sui0fcQVoSK+ywnQQNRmaGVIKxWBS7VmukpNmF6WegDr8y4KzSBCKSh4I6V71r59dc7Snv2KhVltuOveEJ/TAevr56JRrqK/uZcNWtIrsUDW3UjXm7volyrxIsR6N/8PowTrzKQ8pAAW0dJG1zvuMAXZljrPM69Ed2skcQhWhHoU8VdGzIzYgWtJa+fj5EeF4pi9FerE8gjMXzwd8rWekYHHVwhHTKG3SVqqcuN9vbCS5bSebunLNG4QIDAQAB",
+	"manifest_version": 2,
+	"background": {
+		"persistent": true,
+		"scripts": ["socket.io.js","background.js"]
+	},
+	"permissions": ["tabs", "<all_urls>", "tabCapture", "storage"]
+}

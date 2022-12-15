@@ -1,0 +1,22 @@
+{
+	"networkInterface": "10.1.0.144",
+	"browserExecutable": "/path/to/chrome",
+	"chromecastMapping": {
+		"Chromecast Device Name": "screen name (e.g. hokify)"
+	},
+	"defaultScreen": "hokify",
+	"screens": [
+		{
+			"url": "https://hokify.at",
+			"name": "hokify",
+			"cookies": [{
+				"name": "bla",
+				"value": {
+					"meep": "hokify",
+					"moop": { "music": 0, "effect": 0 }
+				},
+				"domain": "hokify.at"
+			}]
+		}
+	]
+}
