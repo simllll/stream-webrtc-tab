@@ -13,6 +13,12 @@ type PageWithExtension = Omit<Page, "browser"> & {
   browser(): BrowserWithExtension;
 };
 
+type StreamLaunchOptions = LaunchOptions &
+  BrowserLaunchArgumentOptions &
+  BrowserConnectOptions & {
+    allowIncognito?: boolean;
+  };
+
 let currentIndex = 0;
 
 declare module "puppeteer" {
@@ -25,11 +31,22 @@ declare module "puppeteer" {
 
 type BrowserWithExtension = Browser & { videoCaptureExtension?: Page };
 
+const extensionPath = path.join(
+  url.fileURLToPath(new URL(".", import.meta.url)),
+  "..",
+  "extension"
+);
+const extensionId = "ohjhakbncjlkfjihjcoibikidbgccmoc";
+
 export async function launch(
   arg1:
-    | (LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions)
+    | (StreamLaunchOptions &
+        BrowserLaunchArgumentOptions &
+        BrowserConnectOptions)
     | any,
-  opts?: LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions
+  opts?: StreamLaunchOptions &
+    BrowserLaunchArgumentOptions &
+    BrowserConnectOptions
 ): Promise<Browser> {
   // if puppeteer library is not passed as first argument, then first argument is options
   if (typeof arg1.launch !== "function") {
@@ -40,12 +57,36 @@ export async function launch(
 
   if (!opts.args) opts.args = [];
 
-  const extensionPath = path.join(
-    url.fileURLToPath(new URL(".", import.meta.url)),
-    "..",
-    "extension"
-  );
-  const extensionId = "kbjabgdnooobcmmkfahbjmgndhabibkd";
+  function addToArgs(arg: string, value?: string) {
+    if (!value) {
+      if (opts.args.includes(arg)) return;
+      opts.args.push(arg);
+      return;
+    }
+    let found = false;
+    opts.args = opts.args.map((x) => {
+      if (x.includes(arg)) {
+        found = true;
+        return `${x},${value}`;
+      }
+      return x;
+    });
+    if (!found) opts.args.push(arg + value);
+  }
+
+  addToArgs("--load-extension=", extensionPath);
+  addToArgs("--disable-extensions-except=", extensionPath);
+  addToArgs("--allowlisted-extension-id=", extensionId);
+  addToArgs("--autoplay-policy=no-user-gesture-required");
+
+  if (opts.defaultViewport?.width && opts.defaultViewport?.height)
+    opts.args.push(
+      `--window-size=${opts.defaultViewport.width}x${opts.defaultViewport.height}`
+    );
+
+  opts.headless = false;
+
+  /*
   let loadExtension = false;
   let loadExtensionExcept = false;
   let whitelisted = false;
@@ -84,7 +125,7 @@ export async function launch(
 	} */
   // opts.args.push('--enable-use-zoom-for-dsf');
 
-  opts.headless = false;
+  // opts.headless = false;
 
   let browser: BrowserWithExtension;
   if (typeof arg1.launch === "function") {
@@ -93,11 +134,28 @@ export async function launch(
     browser = await puppeteerLaunch(opts);
   }
 
+  if (opts.allowIncognito) {
+    const settings = await browser.newPage();
+    await settings.goto(`chrome://extensions/?id=${extensionId}`);
+    await settings.evaluate(() => {
+      (document as any)
+        .querySelector("extensions-manager")
+        .shadowRoot.querySelector(
+          "#viewManager > extensions-detail-view.active"
+        )
+        .shadowRoot.querySelector(
+          "div#container.page-container > div.page-content > div#options-section extensions-toggle-row#allow-incognito"
+        )
+        .shadowRoot.querySelector("label#label input")
+        .click();
+    });
+    await settings.close();
+  }
+
   const extensionTarget = await browser.waitForTarget(
     (t) =>
-      t.url() ===
-        `chrome-extension://${extensionId}/_generated_background_page.html` &&
-      t.type() === "background_page"
+      t.url() === `chrome-extension://${extensionId}/options.html` &&
+      t.type() === "page"
   );
 
   if (!extensionTarget) {
@@ -112,12 +170,12 @@ export async function launch(
 
   browser.videoCaptureExtension = videoCaptureExtension;
 
-  await browser.videoCaptureExtension.exposeFunction(
+  /*await browser.videoCaptureExtension.exposeFunction(
     "log",
     (...parameters: any) => {
       console.log("videoCaptureExtension", ...parameters);
     }
-  );
+  );*/
 
   return browser;
 }
@@ -133,6 +191,10 @@ export async function startStream(
     page.index = currentIndex++;
   }
 
+  console.log('start recording', page.index, room, zoom);
+
+  await page.bringToFront();
+
   await page.browser().videoCaptureExtension?.evaluate(
     (settings) => {
       try {
@@ -140,6 +202,7 @@ export async function startStream(
         // @ts-ignore
         return START_RECORDING(settings);
       } catch (err) {
+        console.error('err', err);
         return err;
       }
     },

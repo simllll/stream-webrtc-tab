@@ -69,7 +69,8 @@ async function startBrowser() {
   const browser = await launch({
     executablePath: config.browserExecutable,
     args: [
-      "--headless=chrome",
+      "--headless=new", // from chrome v109 onwoards
+      //  "--headless=chrome",
       /* '--start-fullscreen', */ "--autoplay-policy=no-user-gesture-required",
       /* '--window-size=1920,1080', */ "--no-default-browser-check",
     ],

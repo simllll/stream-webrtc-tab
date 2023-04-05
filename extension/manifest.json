@@ -1,11 +1,14 @@
 {
 	"name": "Video Capture",
-	"version": "0.1.0",
-	"key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2t3ge1hfewBWhRc+EpdeUFmdBiwhRuzfcW+8pbQTWb6sHou+vAY/pFlzMkn5qtwyIGZfYQ5HHprvSE47WquB2mzINRz3S6Sui0fcQVoSK+ywnQQNRmaGVIKxWBS7VmukpNmF6WegDr8y4KzSBCKSh4I6V71r59dc7Snv2KhVltuOveEJ/TAevr56JRrqK/uZcNWtIrsUDW3UjXm7volyrxIsR6N/8PowTrzKQ8pAAW0dJG1zvuMAXZljrPM69Ed2skcQhWhHoU8VdGzIzYgWtJa+fj5EeF4pi9FerE8gjMXzwd8rWekYHHVwhHTKG3SVqqcuN9vbCS5bSebunLNG4QIDAQAB",
-	"manifest_version": 2,
+	"version": "0.2.0",
+	"key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA8ULjXltqotUk/BJ66DFDm2ORl8aHbfjeeqFIx7T7QAUebNQum2Z3HEIRDYossbkVzo1WleD9QxnXnju9b2nqtrL4lHtCKMFicQRf421l7vMtcVWiAER29IFETufesaMsE8tRIMAQpog10CXTTemQ+jrZb3DLyqzHvHyil3qiID6xCBG38ZuZfhooKt0GI+Hd6/g41ARnVT9ewTN0emM9XxxCZTmAwFcIokLMswRE4yPpfn4X4urwecKRx4vzIu6uEoKhv+9E22/8277pglvP82UQ5ufZDhPTgsFvp0kmL/822oMf5CN6YkNZZKaO/1Hv7z6iEcFy6lWz6XrhpRtbnwIDAQAB",
+	"manifest_version": 3,
 	"background": {
-		"persistent": true,
-		"scripts": ["socket.io.js","background.js"]
+		"service_worker": "background.js"
 	},
-	"permissions": ["tabs", "<all_urls>", "tabCapture", "storage"]
+	"sockets": {
+		"udp": { "send": ["*:*"], "bind": ["*:*"] }
+	},
+	"permissions": ["tabs", "tabCapture", "storage", "activeTab", "scripting", "sockets.udp"],
+	"host_permissions": ["*://*/*", "<all_urls>", "https://*/*", "http://*/*"]
 }
